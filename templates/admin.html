@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if not current_user.is_authenticated %}
+    <!-- Giriş Formu -->
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <h3 class="text-center mb-4">Admin Giriş</h3>
+        <form method="POST" action="{{ url_for('login') }}">
+          <div class="mb-3">
+            <label for="username" class="form-label">Kullanıcı Adı</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Parola</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <!-- Video Başlatma Formu ve Job Listesi -->
+    <div class="row">
+      <div class="col-md-6">
+        <h3 class="mb-4">Yeni Video Oluştur</h3>
+        <form method="POST" action="{{ url_for('admin') }}">
+          <div class="mb-3">
+            <label for="video_topic" class="form-label">Video Konusu</label>
+            <input type="text" class="form-control" id="video_topic" name="video_topic" placeholder="Örn: Timsah dedektif" required>
+          </div>
+          <button type="submit" class="btn btn-success">Başlat</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h3 class="mb-4">İş Geçmişi</h3>
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Başlık</th>
+              <th>Durum</th>
+              <th>Link</th>
+              <th>Tarih</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for job in jobs %}
+              <tr>
+                <td>{{ job.id }}</td>
+                <td>{{ job.title }}</td>
+                <td>{{ job.status }}</td>
+                <td>
+                  {% if job.result_url %}
+                    <a href="{{ job.result_url }}" target="_blank">İzle</a>
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>{{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
